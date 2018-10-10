@@ -2,7 +2,7 @@
 
 
 // When the browser window is resized, makeResponsive() is called.
-d3.select(window).on("resize", makeResponsive);
+//d3.select(window).on("resize", makeResponsive);
 
 // When the browser loads, makeResponsive() is called.
 makeResponsive();
@@ -22,8 +22,6 @@ function makeResponsive() {
 
     // SVG wrapper dimensions are determined by the current width and
     // height of the browser window.
-    // var svgWidth = window.innerWidth;
-    // var svgHeight = window.innerHeight;
 
     var svgWidth = 850;
     var svgHeight = 500;
@@ -145,7 +143,7 @@ function makeResponsive() {
 
         var toolTip = d3.tip()
             .attr("class", "d3-tip")
-            .offset([-8, 0])
+            .offset([80, -60])
             .html(function(d) {
             return (`${d.state}<br>${xlabel} ${d[chosenXAxis]}<br>${ylabel} ${d[chosenYAxis]}%`);
             });
@@ -163,7 +161,7 @@ function makeResponsive() {
         return textGroup;
     }
 
-    // Import Data
+    // Retrieve data from the CSV file and execute everything below
     var file = "assets/data/data.csv"
     d3.csv(file).then(successHandle, errorHandle);
 
@@ -173,9 +171,8 @@ function makeResponsive() {
 
     function successHandle(demoData) {
 
-        // Step 1: Parse Data/Cast as numbers
-        // ==============================
-        demoData.forEach(function(data) {
+        // Step 1: Parse Data
+            demoData.forEach(function(data) {
             data.poverty = +data.poverty;
             data.healthcare = +data.healthcare;
             data.age = +data.age;
@@ -184,18 +181,15 @@ function makeResponsive() {
             data.smokes = +data.smokes;
         });
 
-        // Step 2: Create scale functions
-        // ==============================
+        // Step 2: Create scale functions        
         var xLinearScale = xScale(demoData, chosenXAxis);
         var yLinearScale = yScale(demoData, chosenYAxis);
 
-        // Step 3: Create axis functions
-        // ==============================
+        // Step 3: Create initial axis functions        
         var bottomAxis = d3.axisBottom(xLinearScale);
         var leftAxis = d3.axisLeft(yLinearScale);
 
-        // Step 4: Append Axes to the chart
-        // ==============================
+        // Step 4: Append Axes to the chart        
         var xAxis = chartGroup.append("g")
             .classed("x-axis", true)
             .attr("transform", `translate(0, ${height})`)
@@ -205,8 +199,7 @@ function makeResponsive() {
             .classed("y-axis", true)
             .call(leftAxis);
 
-        // Step 5: Create Circles
-        // ==============================
+        // Step 5: Append Initial Circles        
         var circlesGroup = chartGroup.selectAll("circle")
             .data(demoData)
             .enter()
